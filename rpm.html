@@ -1,0 +1,214 @@
+<!DOCTYPE HTML>
+<html>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<head>
+<b>Kanji Tester Mark 6</b>
+</head>
+<body>
+<script>
+//testing
+// When the window has finished loading  call oDir to get the list of 
+// available files and fill the select box.
+window.onload = function () {
+	oDir.open("get","get_files.php", true);
+	oDir.send();
+}
+
+// Define the global variables
+var oReq = new XMLHttpRequest();
+var oDir = new XMLHttpRequest();
+var testCases = [];
+var G_cfile = "" ; // file name
+var G_direction = 1 ; // J to E (1) or E to J (2) 
+var G_testCount = 0;
+
+function reqListner() {
+	console.log(this.responseText);
+}
+
+// Define the testCase class
+function testCase(kanji,hiragana,english) {
+	this.kanji = kanji;
+	this.hiragana = hiragana;
+	this.english = english;
+}
+
+// Generic array shuffle routine.
+function shuffle(myarray) {
+	var cIdx = myarray.length, tval, rIdx;
+	
+	while (0 !== cIdx) {
+		// Pick a remaining element	
+		rIdx = Math.floor(Math.random() * cIdx);
+		cIdx -= 1;
+	
+		// And swap it with the current element
+		tval = myarray[cIdx];
+		myarray[cIdx] = myarray[rIdx];
+		myarray[rIdx] = tval;
+	}
+	return (myarray);
+}
+
+// Fill the select box by calling php routine which gets the list of files
+// in the data directory.
+oDir.onload = function() {
+	dirList = JSON.parse(this.responseText);
+	var selbox = document.getElementById("selectFile");
+	// Assume that the first two items in the array are "." and ".."
+	for (var i = 2 ; i < dirList.length ; i++) {
+		var opt = document.createElement("option");
+		opt.text = dirList[i];
+		selbox.add(opt);
+	}	
+}
+
+// Inner routine to open the file. Contents are passed back as a single string
+// we parse the string into lines and fields in Javascript.
+
+oReq.onload = function() {
+	var mystr = this.responseText;
+	mystr = mystr.replace(/\"/g,'');
+	var mylines = mystr.split("\\r\\n");
+	testCases.length = 0; // make sure the array is empty.
+	for (var i = 0 ; i < mylines.length ; i++) {
+		var mywords = mylines[i].split("\\t");
+		var fred = new testCase(mywords[0],mywords[1],mywords[2]);
+		testCases.push(fred);
+	};
+	// randomize the array
+	testCases = shuffle(testCases);
+	var t = document.getElementById("tableStatus");
+	t.rows[0].cells[1].innerHTML = G_cfile;
+	t.rows[1].cells[1].innerHTML = testCases.length;
+};
+
+// Get the file name from the select box and pass it to the PHP routine
+// to open the file and return the contents
+function oFile () {
+	var e = document.getElementById("selectFile");
+	var fname = e.options[e.selectedIndex].value;
+	var url = "get_data.php?fname=".concat(fname) ;
+	oReq.open("get",url,true);
+	oReq.send();
+	G_cfile = fname;
+}
+
+// Switch from English to Japnese and vice versa
+// Change the labels on the tables
+function changeDirection() {
+	var ds = document.getElementById("selectDirection");
+	G_direction = ds.options[ds.selectedIndex].value;
+	var table = document.getElementById("tableOut");
+	switch(G_direction) {
+	case "1":  // Japanese to English
+		table.rows[0].cells[0].innerHTML = "Kanji";
+		table.rows[2].cells[0].innerHTML = "English";
+		break;
+	case "2": // English to Japanese
+		table.rows[0].cells[0].innerHTML = "English";
+		table.rows[2].cells[0].innerHTML = "Japanese";
+		break;
+	}
+} 
+
+// Main loop
+var state=0;
+// State machine to handle test cases. Note yorn only changes behaviour in 
+// the last case
+// Direction is assumed to have only two possible values, so no elsif
+function jfill(yorn) {
+	var table = document.getElementById("tableOut");
+	switch(state) {
+	case 0: 
+		if (G_direction == 1) {
+			table.rows[0].cells[1].innerHTML = testCases[G_testCount].kanji;
+		} else {
+			table.rows[0].cells[1].innerHTML = testCases[G_testCount].english;
+		}	
+		state++;
+		break;
+	case 1:
+		table.rows[1].cells[1].innerHTML = testCases[G_testCount].hiragana;
+		state++;
+		break;
+	case 2: 
+		if (G_direction == 1) {
+			table.rows[2].cells[1].innerHTML = testCases[G_testCount].english;
+		} else {
+			table.rows[2].cells[1].innerHTML = testCases[G_testCount].kanji;
+		}
+		state++;
+		break;
+	case 3: // finished one test case
+		state = 0 ;
+		table.rows[0].cells[1].innerHTML = "";
+		table.rows[1].cells[1].innerHTML = "";
+		table.rows[2].cells[1].innerHTML = "";
+		if (yorn == 1) { //Answer was correct, remove the item
+			testCases.splice(G_testCount,1);
+			G_testCount--; // adjust for the removed items
+			var t = document.getElementById("tableStatus");
+			t.rows[1].cells[1].innerHTML = testCases.length;
+		}
+		G_testCount++;
+		if (G_testCount == testCases.length -1 ) {
+//			testCases = shuffle(testCases);// Shuffle again
+			G_testCount = 0;
+		}
+		if (testCases.length == 1) {
+			alert("Test finished")
+		}
+	} 
+	
+}
+
+</script>
+
+<font size="4">
+</br>
+Select File 
+<select id="selectFile">
+</select>
+<br/>
+<button type="button" onclick="oFile()">Open File</button>
+</br>
+Direction 
+<select id="selectDirection" onchange="changeDirection()">
+	<option value="1">Japanese to English</option>
+	<option value="2">English to Japanese</option>
+</select>
+<table id="tableStatus" border="1">
+	<tr>
+		<td>File</td>
+		<td>No File</td>
+	</tr>
+	<tr>
+		<td>Records</td>
+		<td>0</td>
+	</tr>
+</table>
+</font>
+
+<font size="6">
+
+<table id="tableOut" border="1">
+	<tr>
+		<td>Kanji</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>Hiragana</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>English</td>
+		<td></td>
+	</tr>
+</table>
+<button type="button" onclick="jfill(1)">Correct</button>
+<button type="button" onclick="jfill(0)">Incorrect</button>
+</br>
+<font/>
+</body>
+</HTML>

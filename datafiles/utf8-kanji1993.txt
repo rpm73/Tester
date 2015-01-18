@@ -1,0 +1,128 @@
+事態	じたい	the situation, state of affairs
+軽率	けいそつ	rashness, haste
+避ける	さける	avoid, shirk
+相互	そうご	mutual, reciprical
+取り除く	とりのぞく	take away, remove
+偽造	ぎぞう	forgery
+損なう	そかなう	to hurt, spoil
+犯罪	はんざい	a crime, an offense
+処罰	しょばつ	punishment, penalty
+定義	ていぎ	define, definition
+倫理的	りんりてき	ethical
+微妙	びみょう	subtle, delicate, fine
+一概	いちがい	sweeping, indiscriminate, generalise
+講義	こうぎ	a lecture
+施行	しこう/せこう	enforce, carry out
+豊作	ほうさく	good, abundant, bumper crop
+振興	しんこう	promotion
+視点	してん	a view point.
+収支	しゅうし	income and expences
+抗議	こうぎ	a protest.
+思考	しこう	thought, thinking
+方策	ほうさく	a plan, policy
+進行	しんこう	an advance
+支店	してん	branch office
+興奮	こうふん	excitment, agitation
+潮	しお	tide, chance
+崩れ	くずれ	crumbling, collapse, ruin
+死傷者	ししょうしゃ	casualties, killed and wounded
+大参事	だいさんじ	chief councillor
+役職	やくしょく	post, position
+辞め	やめ	retire
+隠居	いんきょ	retired person
+渋滞	じゅうたい	congestion, delay
+改善	かいぜん	betterment, improvement
+取り締まり	とりしまり	control, management, supervision
+確保	かくほ	secure, ensure, maintain
+図る	はかる	plot, deceive, devise, refer A to B
+看護婦	かんごふ	nurse
+派遣	はけん	despatch, send
+慣例	かんれい	custom, precedent
+習慣	しゅうかん	custom, habit
+順調	じゅんちょう	favourable, doing well
+順番	じゅんばん	turn, order of things
+模索	もさく	groping
+索引	さくいん	index
+浪費	ろうひ	waste, extravagance.
+費用	ひよう	cost, expence
+妥協	だきょう	compromise, giving in
+協定	きょうてい	pact, agreement
+運営	うんえい	management, operation, administation
+営業	えいぎょう	business, trade, managment
+悪化	あっか	degeneration, corruption
+不信感	ふしんかん	feeling of distrust
+必要	ひつよう	required, needed
+貨幣	かへい	money, currency, coinage
+経済的	けいざいてき	economic
+信用	しんよう	confidence, faith
+重大	じゅうだい	important, weighty
+最近	さいきん	recently
+心臓	しんぞう	heart
+臓器	ぞうき	internal organs
+移植	いしょく	transplanting, porting
+話題	わだい	topic, subject
+進歩	しんぽ	progress, development
+気候	きこう	climate
+工場	こうじょう	factory
+用地	ようち	site
+発見	はっけん	discovery
+会議	かいぎ	meeting
+演奏	えんそう	muscial performance
+巻き込む	まきこむ	rollup, enfold
+地震	じしん	earthquake
+高層	こうそう	upper
+一部	いちぶ	one copy, a part
+数十名	すうじゅうめい	several 10s of people
+注目	ちゅうもく	notice, attention
+現在	げんざい	present, now
+警察	けいさつ	police
+大都市	だいとし	metropolis, large city
+駐車違反	しゅうしゃいはん	parking violation
+強化	きょうか	strengthen, intensify
+都心	としん	city centre
+駐車場	ちゅうしゃじょう	car park
+自然	しぜん	nature
+災害	さいがい	calamity, disaster
+被害	ひがい	damage
+生じる	しょうじる	to produce, yield
+医師	いし	doctor
+組織	そしき	organization, system
+総会	そうかい	general meeting
+火災	かさい	conflagration, fire
+計画	けいかく	plan, project.
+製品	せいひん	product
+血液	けつえき	blood
+丁寧	ていねい	polite, careful
+有効	ゆうこう	validity
+毎晩	まいばん	every night
+理想	りそう	ideal
+交流	こうりゅう	intercourse, exchange
+委員会	いいんかい	committee,
+伝染病	でんせんびょう	contagious disease
+明確	めいかく	clear up, clarify, define
+明朗	めいろう	bright, clear, cheerful
+明白	めいはく	obvious, overt
+背景	はいけい	background, setting
+景色	けしき	landscape, scene
+景気	けいき	condition, state, business condition
+光景	こうけい	scene, spectacle
+気配	けはい	indication, worry
+配慮	はいりょ	consderation, concern, forethought
+配置	はいち	arrangement, disposition
+分配	ぶんぱい	division, sharing
+胸一杯	むねいっぱい	unknown
+一言	ひとこと	single word
+勇気	ゆうき	courage, 
+深刻	しんこく	serious.
+間接的	かんせつてき	indirectly
+平均的	へいきんてき	on average
+楽観的	らっかんてき	optimistic, hopeful
+伝統的	でんとうてき	traditional, conventional
+技術的	ぎじゅつてき	technical
+治療	ちりょう	medical treatment
+効果	こうか	effect
+良好	りょうこう	favourable, satisfactory
+良質	りょうしつ	good quality
+良識	りょうしき	good sense
+流通	りゅうつう	circulation, distribution
+複雑	ふくざつ	complicated.
