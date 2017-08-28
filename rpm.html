@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <head>
@@ -6,14 +6,6 @@
 </head>
 <body>
 <script>
-//testing
-// When the window has finished loading  call oDir to get the list of 
-// available files and fill the select box.
-window.onload = function () {
-	oDir.open("get","get_files.php", true);
-	oDir.send();
-}
-
 // Define the global variables
 var oReq = new XMLHttpRequest();
 var oDir = new XMLHttpRequest();
@@ -21,6 +13,41 @@ var testCases = [];
 var G_cfile = "" ; // file name
 var G_direction = 1 ; // J to E (1) or E to J (2) 
 var G_testCount = 0;
+var G_lang = 1 ; // 1 = Cantonese, 2 = Japanese
+var G_lang_str = ["","cantonese","japanese"];
+var state=0;
+var goes=0; // How many records has the user seen
+
+var foreignChar = "Chinese Characters";
+var reading = "Pronunciation";
+var	english = "English";
+
+
+// When the window has finished loading  call oDir to get the list of 
+// available files and fill the select box.
+window.onload = function () {
+	var table = document.getElementById("tableOut");
+	setFileList();
+	// set up the initial labels in the table
+	table.rows[0].cells[0].innerHTML = foreignChar ;
+	table.rows[1].cells[0].innerHTML = reading; 
+	table.rows[2].cells[0].innerHTML = english;
+}
+
+function setFileList () {
+	var ds = document.getElementById("selectFile");
+	var i;
+	// First ensure that select box is empty
+	if (ds.options.length) {
+		for (i = ds.options.length - 1; i>=0; i--) {
+			ds.remove(i);
+		}
+	}
+	var parmStr = "get_files.php?lang=" . concat(G_lang_str[G_lang]);
+	oDir.open("get", parmStr, true);
+	oDir.send();
+};
+	
 
 function reqListner() {
 	console.log(this.responseText);
@@ -71,16 +98,19 @@ oReq.onload = function() {
 	mystr = mystr.replace(/\"/g,'');
 	var mylines = mystr.split("\\r\\n");
 	testCases.length = 0; // make sure the array is empty.
-	for (var i = 0 ; i < mylines.length ; i++) {
+	for (var i = 0 ; i < mylines.length ; i++) { // split adds empty record
 		var mywords = mylines[i].split("\\t");
 		var fred = new testCase(mywords[0],mywords[1],mywords[2]);
 		testCases.push(fred);
 	};
 	// randomize the array
 	testCases = shuffle(testCases);
+	// load the values into the table status
 	var t = document.getElementById("tableStatus");
 	t.rows[0].cells[1].innerHTML = G_cfile;
 	t.rows[1].cells[1].innerHTML = testCases.length;
+	t.rows[2].cells[1].innerHTML = testCases.length;
+	goes = 0;
 };
 
 // Get the file name from the select box and pass it to the PHP routine
@@ -88,10 +118,26 @@ oReq.onload = function() {
 function oFile () {
 	var e = document.getElementById("selectFile");
 	var fname = e.options[e.selectedIndex].value;
-	var url = "get_data.php?fname=".concat(fname) ;
+	var table = document.getElementById("tableOut");
+	var url = "get_data.php?lang=".concat(G_lang_str[G_lang],"&fname=",fname) ;
 	oReq.open("get",url,true);
 	oReq.send();
 	G_cfile = fname;
+	// Make sure that everything is set back to start as we assume that 
+	// when the file is opened we are starting afresh
+	// Clear the table of any current values
+	table.rows[0].cells[1].innerHTML = "";
+	table.rows[1].cells[1].innerHTML = "";
+	table.rows[2].cells[1].innerHTML = "";
+	// set state to 0
+	state = 0;
+	// load the values into the table status
+	goes = 0;
+	var t = document.getElementById("tableStatus");
+	t.rows[0].cells[1].innerHTML = G_cfile;
+	t.rows[1].cells[1].innerHTML = testCases.length;
+	t.rows[2].cells[1].innerHTML = testCases.length;
+	t.rows[3].cells[1].innerHTML = 0;
 }
 
 // Switch from English to Japnese and vice versa
@@ -101,19 +147,46 @@ function changeDirection() {
 	G_direction = ds.options[ds.selectedIndex].value;
 	var table = document.getElementById("tableOut");
 	switch(G_direction) {
-	case "1":  // Japanese to English
-		table.rows[0].cells[0].innerHTML = "Kanji";
-		table.rows[2].cells[0].innerHTML = "English";
+	case "1":  // Foreign to English
+		table.rows[0].cells[0].innerHTML = foreignChar ;
+		table.rows[1].cells[0].innerHTML = reading;
+		table.rows[2].cells[0].innerHTML = english;
 		break;
-	case "2": // English to Japanese
-		table.rows[0].cells[0].innerHTML = "English";
-		table.rows[2].cells[0].innerHTML = "Japanese";
+	case "2": // English to Foreign
+		table.rows[0].cells[0].innerHTML = english;
+		table.rows[1].cells[0].innerHTML = reading;
+		table.rows[2].cells[0].innerHTML = foreignChar;
 		break;
 	}
 } 
 
+// Function to select the language. Set the correct labels and restrict
+// the visibile files
+function setLang() {
+	var ds = document.getElementById("selectLang");
+	G_lang = ds.options[ds.selectedIndex].value;
+	var table = document.getElementById("tableOut");
+	var fred = "Lang Choice is " + G_lang;
+	switch(G_lang) {
+	case "1": // Cantonese
+		foreignChar = "Chinese Characters";
+		reading = "Pronunciation";
+		english = "English";
+		break;
+	case "2": // Japanese
+		foreignChar = "Kanji";
+		reading = "Hiragana";
+		english = "English";
+		break;
+	}
+	table.rows[0].cells[0].innerHTML = foreignChar ;
+	table.rows[1].cells[0].innerHTML = reading; 
+	table.rows[2].cells[0].innerHTML = english;
+	// reload the file selection based on the language.
+	setFileList();
+}
+
 // Main loop
-var state=0;
 // State machine to handle test cases. Note yorn only changes behaviour in 
 // the last case
 // Direction is assumed to have only two possible values, so no elsif
@@ -142,30 +215,50 @@ function jfill(yorn) {
 		break;
 	case 3: // finished one test case
 		state = 0 ;
+		var t = document.getElementById("tableStatus");
+		goes++;
+		t.rows[3].cells[1].innerHTML = goes;
+		// clear the values in the table
 		table.rows[0].cells[1].innerHTML = "";
 		table.rows[1].cells[1].innerHTML = "";
 		table.rows[2].cells[1].innerHTML = "";
 		if (yorn == 1) { //Answer was correct, remove the item
 			testCases.splice(G_testCount,1);
 			G_testCount--; // adjust for the removed items
-			var t = document.getElementById("tableStatus");
-			t.rows[1].cells[1].innerHTML = testCases.length;
+			t.rows[2].cells[1].innerHTML = testCases.length;
 		}
 		G_testCount++;
-		if (G_testCount == testCases.length -1 ) {
-//			testCases = shuffle(testCases);// Shuffle again
+		if (G_testCount == testCases.length ) { // removed -1
+			testCases = shuffle(testCases);// Shuffle again
 			G_testCount = 0;
 		}
-		if (testCases.length == 1) {
+		if (testCases.length == 0) {
 			alert("Test finished")
 		}
 	} 
 	
 }
 
+function showtable () {
+var tableID=document.getElementById("tableTones");
+//document.getElementById("tableTones").style.visibility="hidden";
+	if (tableID.style.visibility=="hidden") 
+	{
+		tableID.style.visibility="visible";
+	} else {
+		tableID.style.visibility="hidden";
+	}
+}
+
 </script>
 
 <font size="4">
+</br>
+Select Language
+<select id="selectLang" onchange="setLang()">
+	<option value="1">Cantonese</option>
+	<option value="2">Japanese</option>
+</select>
 </br>
 Select File 
 <select id="selectFile">
@@ -175,8 +268,8 @@ Select File
 </br>
 Direction 
 <select id="selectDirection" onchange="changeDirection()">
-	<option value="1">Japanese to English</option>
-	<option value="2">English to Japanese</option>
+	<option value="1">Foreign to English</option>
+	<option value="2">English to Foreign</option>
 </select>
 <table id="tableStatus" border="1">
 	<tr>
@@ -184,17 +277,26 @@ Direction
 		<td>No File</td>
 	</tr>
 	<tr>
-		<td>Records</td>
+		<td>Records in file</td>
+		<td></td>
+	<tr>
+		<td>Records remaining</td>
+		<td>0</td>
+	</tr>
+	<tr>
+		<td>Records viewed</td>
 		<td>0</td>
 	</tr>
 </table>
 </font>
 
+<button type="button" onclick="jfill(1)">Correct</button>
+<button type="button" onclick="jfill(0)">Incorrect</button>
 <font size="6">
 
 <table id="tableOut" border="1">
 	<tr>
-		<td>Kanji</td>
+		<td height="30">Kanji</td>
 		<td></td>
 	</tr>
 	<tr>
@@ -209,6 +311,35 @@ Direction
 <button type="button" onclick="jfill(1)">Correct</button>
 <button type="button" onclick="jfill(0)">Incorrect</button>
 </br>
+<button type="button" onclick="showtable()">Show Tones Tables</button>
+<font size=3>
+<table id="tableTones" border="1"> 
+	<tr>
+		<td>1</td>
+		<td>High level</td>
+	</tr>
+	<tr>
+		<td>2</td>
+		<td>Mid rising</td>
+	</tr>
+	<tr>
+		<td>3</td>
+		<td>Mid level</td>
+	</tr>
+	<tr>
+		<td>4</td>
+		<td>Low falling</td>
+	</tr>
+	<tr>
+		<td>5</td>
+		<td>Low rising</td>
+	</tr>
+	<tr>
+		<td>6</td>
+		<td>Low level</td>
+	</tr>
+</table>
+</font>
 <font/>
 </body>
 </HTML>
